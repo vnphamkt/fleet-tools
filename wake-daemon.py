@@ -28,7 +28,7 @@ HOME = os.path.expanduser("~")
 WAKE_DIR = os.path.join(HOME, "wake")
 INBOX = os.path.join(WAKE_DIR, "inbox")
 MACS_FILE = os.path.join(WAKE_DIR, "macs.json")
-REMOTE = "gdrive:7694 Muse Box/7695 fleet/wake/inbox"
+REMOTE = "gdrive:YOUR_WAKE_INBOX_PATH"  # e.g. "gdrive:fleet/wake/inbox"
 POLL_SEC = 30
 
 def log(msg):

@@ -1,0 +1,1 @@
+{"M1":{"folder":"YOUR_DRIVE_FOLDER_ID_1","name":"machine-1"},"M2":{"folder":"YOUR_DRIVE_FOLDER_ID_2","name":"machine-2"},"M3":{"folder":"YOUR_DRIVE_FOLDER_ID_3","name":"machine-3"},"_comment":"Copy to fleet-config.json and fill in your own. Never commit the real one."}

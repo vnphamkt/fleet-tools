@@ -2,7 +2,7 @@
 """
 fleet-health.py — health monitor for Muse's fleet (muse-box machines).
 
-Requirement (proposed 2026-10-04, Khanh to adjust):
+Requirement (proposed 2026-10-04 — adjust to taste):
   No 15-minute SLA. Hourly check. Silence when healthy.
   Alert only when something is actually not working:
 
@@ -24,11 +24,27 @@ Exit 0 = healthy (no output unless --json). Exit 1 = problems found.
 import json, os, re, subprocess, sys
 from datetime import datetime, timezone
 
-FLEET = {
-    "M1": {"name": "xps3060ti",  "folder": "1VEn1TaQvkb7ixhO_yWlEYR1EGAN26v6u"},
-    "M2": {"name": "lenovo1070", "folder": "1qWLf5B8Th6lOYnTguhDrJi2OEFXwZdGQ"},
-    "M3": {"name": "msi",        "folder": "1PElF5bgvVQLBWrf9Uuy7PwoZGYj2OzXg"},
-}
+FLEET = None
+_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                       "fleet-config.json")
+_EXAMPLE = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "fleet-config.example.json")
+
+def load_fleet():
+    global FLEET
+    if FLEET is not None:
+        return FLEET
+    for path in (_CONFIG, _EXAMPLE):
+        try:
+            with open(path) as f:
+                FLEET = json.load(f)
+                return FLEET
+        except Exception:
+            continue
+    # fallback: empty — user supplies fleet-config.json
+    # (see fleet-config.example.json)
+    FLEET = {}
+    return FLEET
 
 def gws(args):
     try:
@@ -185,7 +201,8 @@ def check_crash_loop(dest, problems, tag):
 
 def main():
     problems, infos, alive = [], [], {}
-    for tag, cfg in FLEET.items():
+    fleet = load_fleet()
+    for tag, cfg in fleet.items():
         try:
             check_machine(tag, cfg, problems, infos, alive)
         except Exception as e:
